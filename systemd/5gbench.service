@@ -1,0 +1,30 @@
+[Unit]
+Description=5gbench 5G Tri-Carrier Benchmarking Tool
+Documentation=https://github.com/a3v01d/5gbench
+After=ModemManager.service network.target
+Wants=ModemManager.service
+
+[Service]
+Type=simple
+# Root required for 'ip netns' operations. Alternatively grant CAP_NET_ADMIN
+# and CAP_NET_RAW via AmbientCapabilities below and run as a regular user.
+User=root
+Environment=HOME=/root
+
+# Adjust these paths to match your installation:
+ExecStartPre=/usr/local/bin/5gbench preflight
+ExecStart=/usr/local/bin/5gbench start --quiet
+ExecStop=/usr/local/bin/5gbench stop
+
+# Restart on unexpected failure (not on clean exit codes 0/1)
+Restart=on-failure
+RestartSec=10
+
+# Optional: run as non-root with elevated capabilities instead of User=root
+# User=5gbench
+# Group=5gbench
+# AmbientCapabilities=CAP_NET_ADMIN CAP_NET_RAW
+# CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_RAW
+
+[Install]
+WantedBy=multi-user.target
