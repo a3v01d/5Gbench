@@ -257,7 +257,7 @@ async def _run_app(cfg: Config, quiet: bool) -> None:
     if api_state is not None:
         tasks.append(asyncio.create_task(api_state.consume(), name="api_consumer"))
         tasks.append(asyncio.create_task(
-            start_api_server(api_state, cfg.api.host, cfg.api.port),
+            start_api_server(api_state, cfg.api.bind, cfg.api.port),
             name="api_server",
         ))
 
