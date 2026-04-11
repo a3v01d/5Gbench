@@ -22,10 +22,15 @@ import re
 from datetime import datetime
 from typing import Any
 
+from typing import TYPE_CHECKING
+
 from fivegbench.bus import EventBus
 from fivegbench.config import Config, ModemConfig, ThroughputConfig
 from fivegbench.namespace import netns_exec
 from fivegbench.session import SessionManager, SessionStatus
+
+if TYPE_CHECKING:
+    from fivegbench.modem.health import ModemHealthMonitor
 
 log = logging.getLogger(__name__)
 
@@ -161,11 +166,13 @@ class ThroughputCollector:
         cfg: Config,
         bus: EventBus,
         session_mgr: SessionManager,
+        health_monitor: "ModemHealthMonitor | None" = None,
     ) -> None:
         self._cfg = cfg
         self._tp_cfg: ThroughputConfig = cfg.throughput
         self._bus = bus
         self._session = session_mgr
+        self._health = health_monitor
         self._running = False
         self._trigger: asyncio.Event = asyncio.Event()
 
@@ -218,6 +225,13 @@ class ThroughputCollector:
         for modem in self._cfg.modems:
             if self._session.status != SessionStatus.ACTIVE:
                 break
+            if self._health is not None and not self._health.is_healthy(modem.carrier):
+                log.debug(
+                    "ThroughputCollector: skipping %s (not healthy: %s)",
+                    modem.carrier,
+                    self._health.health_state(modem.carrier).value,
+                )
+                continue
             await self._test_modem(modem)
 
     async def _test_modem(self, modem: ModemConfig) -> None:

@@ -99,10 +99,11 @@ class ModemConfig:
     label: str          # human-readable: "AT&T", "T-Mobile", "Verizon"
     apn: str
 
-    # Resolved at runtime by discovery.py
+    # Resolved at runtime by discovery.py / ModemManager
     at_port: str = ""           # /dev/ttyUSBx for AT commands
     net_interface: str = ""     # wwanX
     namespace: str = ""         # ns_att, ns_tmobile, etc.
+    mm_index: str = ""          # ModemManager index ("0", "1", "2")
 
 
 @dataclass

@@ -190,8 +190,12 @@ async def get_bearer_interface(mm_index: str) -> tuple[str, str, str]:
             # Older mmcli versions put interface at different path
             iface = b.get("bearer", {}).get("interface", "")
         addr = ipv4.get("address", "")
+        prefix = ipv4.get("prefix", "")
         gw = ipv4.get("gateway", "")
-        return iface, addr, gw
+        # Return address in CIDR notation so callers can pass it directly to
+        # `ip addr add` inside the namespace (e.g. "10.1.1.100/30")
+        ip_cidr = f"{addr}/{prefix}" if addr and prefix else addr
+        return iface, ip_cidr, gw
     except (AttributeError, TypeError):
         return "", "", ""
 

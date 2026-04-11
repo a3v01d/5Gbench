@@ -119,10 +119,11 @@ async def _run_app(cfg: Config, quiet: bool) -> None:
     from fivegbench.bus import EventBus
     from fivegbench.db import SQLiteWriter
     from fivegbench.session import SessionManager
-    from fivegbench.modem.discovery import discover_modems, identify_net_interface
+    from fivegbench.modem.discovery import discover_modems
     from fivegbench.modem.manager import (
         find_modem_by_imei, connect_modem, build_modem_info, ModemState,
     )
+    from fivegbench.modem.health import ModemHealthMonitor
     from fivegbench.namespace import setup_namespace, teardown_namespace
     from fivegbench.collectors.rf import RFCollector
     from fivegbench.collectors.gnss import GNSSCollector
@@ -158,36 +159,43 @@ async def _run_app(cfg: Config, quiet: bool) -> None:
         print("Discovering modems…")
     found = await discover_modems(target_imeis)
 
-    # Apply discovered ports to modem configs
+    # Apply discovered AT ports to modem configs
     for modem in cfg.modems:
         info = found.get(modem.imei, {})
         modem.at_port = info.get("at_port", "")
         if not modem.at_port:
             log.warning("No AT port found for %s (%s)", modem.carrier, modem.imei)
 
-    # ── ModemManager: connect and get network interfaces ───────────
+    # ── ModemManager: connect and set up namespaces ────────────────
     for modem in cfg.modems:
         mm_idx = await find_modem_by_imei(modem.imei)
-        if mm_idx:
-            mm_info = await build_modem_info(mm_idx, modem.imei)
-            if mm_info and mm_info.state != ModemState.CONNECTED:
-                await connect_modem(mm_idx, modem.apn)
-                mm_info = await build_modem_info(mm_idx, modem.imei)
-            if mm_info:
-                modem.net_interface = mm_info.bearer_interface
-                # Set up network namespace
-                if modem.net_interface:
-                    ok = await setup_namespace(
-                        modem.namespace,
-                        modem.net_interface,
-                        ip_address=mm_info.ip_address,
-                        gateway=mm_info.gateway,
-                        nameservers=cfg.general.dns.nameservers,
-                    )
-                    if not ok:
-                        log.error("Namespace setup failed for %s", modem.carrier)
-        else:
+        if not mm_idx:
             log.warning("ModemManager does not know modem %s", modem.imei)
+            continue
+
+        modem.mm_index = mm_idx  # persist for health monitor
+
+        mm_info = await build_modem_info(mm_idx, modem.imei)
+        if mm_info and mm_info.state != ModemState.CONNECTED:
+            await connect_modem(mm_idx, modem.apn)
+            mm_info = await build_modem_info(mm_idx, modem.imei)
+
+        if mm_info and mm_info.bearer_interface:
+            modem.net_interface = mm_info.bearer_interface
+            ok = await setup_namespace(
+                modem.namespace,
+                modem.net_interface,
+                ip_address=mm_info.ip_address,   # CIDR notation from fixed manager.py
+                gateway=mm_info.gateway,
+                nameservers=cfg.general.dns.nameservers,
+            )
+            if not ok:
+                log.error("Namespace setup failed for %s", modem.carrier)
+        else:
+            log.warning(
+                "No active bearer for %s — namespace not set up (health monitor will retry)",
+                modem.carrier,
+            )
 
     # ── Collectors ─────────────────────────────────────────────────
     rf_collectors = [
@@ -195,9 +203,12 @@ async def _run_app(cfg: Config, quiet: bool) -> None:
         for modem in cfg.modems
         if modem.at_port
     ]
+
+    health_monitor = ModemHealthMonitor(cfg, bus, session_mgr, rf_collectors)
+
     gnss_collector = GNSSCollector(cfg, bus, session_mgr)
-    throughput_collector = ThroughputCollector(cfg, bus, session_mgr)
-    latency_collector = LatencyCollector(cfg, bus, session_mgr)
+    throughput_collector = ThroughputCollector(cfg, bus, session_mgr, health_monitor)
+    latency_collector = LatencyCollector(cfg, bus, session_mgr, health_monitor)
 
     # ── TUI ────────────────────────────────────────────────────────
     tui = None
@@ -218,6 +229,7 @@ async def _run_app(cfg: Config, quiet: bool) -> None:
     tasks: list[asyncio.Task] = [
         asyncio.create_task(bus.dispatch(), name="bus_dispatch"),
         asyncio.create_task(sqlite_writer.run(), name="sqlite_writer"),
+        asyncio.create_task(health_monitor.run(), name="health_monitor"),
         asyncio.create_task(gnss_collector.run(), name="gnss"),
         asyncio.create_task(throughput_collector.run(), name="throughput"),
         asyncio.create_task(latency_collector.run(), name="latency"),
@@ -250,7 +262,7 @@ async def _run_app(cfg: Config, quiet: bool) -> None:
         task.cancel()
     await asyncio.gather(*tasks, return_exceptions=True)
 
-    # Teardown namespaces
+    # Teardown namespaces (health monitor may have already torn some down)
     for modem in cfg.modems:
         if modem.namespace:
             await teardown_namespace(modem.namespace)
