@@ -227,6 +227,21 @@ async def _run_app(cfg: Config, quiet: bool) -> None:
     else:
         print(f"5gbench started — session {session_mgr.session_id}")
 
+    # ── API server ─────────────────────────────────────────────────
+    api_state = None
+    if cfg.api.enabled:
+        from fivegbench.api.stub import AppState, start_api_server
+        bus.register_consumer("api")
+        api_state = AppState()
+        api_state.attach(
+            session_mgr=session_mgr,
+            health_monitor=health_monitor,
+            throughput_collector=throughput_collector,
+            latency_collector=latency_collector,
+            bus=bus,
+            cfg=cfg,
+        )
+
     # ── Launch all tasks ───────────────────────────────────────────
     tasks: list[asyncio.Task] = [
         asyncio.create_task(bus.dispatch(), name="bus_dispatch"),
@@ -238,6 +253,13 @@ async def _run_app(cfg: Config, quiet: bool) -> None:
     ]
     for rf in rf_collectors:
         tasks.append(asyncio.create_task(rf.run(), name=f"rf_{rf.carrier}"))
+
+    if api_state is not None:
+        tasks.append(asyncio.create_task(api_state.consume(), name="api_consumer"))
+        tasks.append(asyncio.create_task(
+            start_api_server(api_state, cfg.api.host, cfg.api.port),
+            name="api_server",
+        ))
 
     if tui:
         tasks.append(asyncio.create_task(tui.run(), name="tui"))
@@ -328,7 +350,7 @@ def cmd_export(args: argparse.Namespace) -> None:
     """Handle: 5gbench export"""
     from fivegbench.export import export, list_sessions
 
-    db_path = Path(args.db)
+    db_path = Path(args.db).expanduser()
     if not db_path.exists():
         print(f"Error: database path not found: {db_path}", file=sys.stderr)
         sys.exit(1)
