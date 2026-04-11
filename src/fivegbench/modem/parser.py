@@ -151,16 +151,20 @@ def parse_serving_cell(response: str) -> dict[str, Any]:
 
 
 def _parse_lte_fields(fields: list[str], result: dict, offset: int) -> None:
-    # offset: index of duplex mode field
+    # offset: index of the duplex-mode field ("FDD" or "TDD").
+    # Field layout after duplex: mcc, mnc, cellid, pcid, earfcn, freq_band,
+    #   ul_bw, dl_bw, tac, rsrp, rsrq, rssi, sinr, srxlev
     try:
-        result["mcc"] = fields[offset] if offset < len(fields) else None
-        result["mnc"] = fields[offset + 1] if offset + 1 < len(fields) else None
-        result["cell_id"] = _strip_quotes(fields[offset + 2]) if offset + 2 < len(fields) else None
-        result["pci"] = _int(fields[offset + 3]) if offset + 3 < len(fields) else None
-        result["earfcn"] = _int(fields[offset + 4]) if offset + 4 < len(fields) else None
-        band_idx = offset + 5
+        result["mcc"] = fields[offset + 1] if offset + 1 < len(fields) else None
+        result["mnc"] = fields[offset + 2] if offset + 2 < len(fields) else None
+        result["cell_id"] = _strip_quotes(fields[offset + 3]) if offset + 3 < len(fields) else None
+        result["pci"] = _int(fields[offset + 4]) if offset + 4 < len(fields) else None
+        result["earfcn"] = _int(fields[offset + 5]) if offset + 5 < len(fields) else None
+        band_idx = offset + 6
         if band_idx < len(fields):
             result["band"] = f"B{fields[band_idx].strip()}"
+        # rsrp is at duplex+10: skip duplex(0)+mcc(1)+mnc(2)+cellid(3)+pcid(4)+
+        #   earfcn(5)+band(6)+ul_bw(7)+dl_bw(8)+tac(9) = index offset+10
         rsrp_idx = offset + 10
         result["rsrp"] = _float(fields[rsrp_idx]) if rsrp_idx < len(fields) else None
         result["rsrq"] = _float(fields[rsrp_idx + 1]) if rsrp_idx + 1 < len(fields) else None
