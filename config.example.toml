@@ -1,0 +1,83 @@
+# 5gbench configuration file
+# Copy to ~/.config/5gbench/config.toml and edit the [[modems]] section.
+# All other values are optional — sensible defaults are shown here.
+#
+# Required before first run:
+#   1. Set each modem's actual IMEI (from the modem label or: mmcli -m 0 | grep imei)
+#   2. Set each modem's APN for your carrier SIM
+#   3. Set throughput.iperf3_server to a reachable iperf3 server
+#
+# Root or CAP_NET_ADMIN is required for network namespace operations.
+
+[general]
+db_path = "~/.config/5gbench/"         # SQLite databases written here
+log_path = "~/.config/5gbench/logs/"   # Log files written here
+log_level = "warning"                   # debug | info | warning | error
+
+[general.dns]
+nameservers = ["8.8.8.8", "1.1.1.1"]  # Written to /etc/netns/<ns>/resolv.conf
+
+[session_defaults]
+operator = ""           # Pre-fill operator name (overridable in TUI)
+vehicle_id = ""         # Pre-fill vehicle identifier
+route_description = ""  # Pre-fill route description
+notes = ""              # Pre-fill session notes
+
+[gnss]
+primary_modem = "att"                       # Carrier label of primary GNSS source
+failover_order = ["tmobile", "verizon"]     # Failover chain if primary loses fix
+movement_threshold_meters = 5.0             # Min position change to write a new GNSS row
+interpolate_on_fix_loss = true              # Interpolate from last known fix when all modems lose fix
+
+[polling]
+rf_interval_seconds = 1.0           # AT+QENG polling interval (min 0.1)
+neighbor_cells = true               # Collect AT+QENG="neighbourcell" data
+throughput_interval_seconds = 60.0  # How often to run throughput tests
+gnss_interval_seconds = 1.0        # AT+QGPSLOC polling interval
+
+[throughput]
+method = "iperf3"                           # "iperf3" or "http"
+iperf3_server = "your.iperf3.server.com"   # REQUIRED for iperf3 method
+iperf3_port = 5201
+iperf3_duration_seconds = 10
+http_fallback_url = "https://speed.cloudflare.com/__down?bytes=25000000"
+
+[latency]
+methods = ["icmp", "tcp", "http_head"]  # Any combination of these three
+targets = ["8.8.8.8", "1.1.1.1"]
+icmp_count = 10
+tcp_port = 443
+jitter = true
+
+[api]
+enabled = false         # API not implemented in Phase 1 — stub only
+bind = "127.0.0.1"
+port = 8080
+auth = "none"           # "none" or "apikey"
+api_key = ""            # Required if auth = "apikey"
+
+[tui]
+enabled = true          # false disables TUI (equivalent to --quiet)
+
+# ---------------------------------------------------------------------------
+# Modem definitions — add one [[modems]] section per physical modem.
+# Find the IMEI with: mmcli -m 0 | grep imei  (repeat for -m 1, -m 2)
+# ---------------------------------------------------------------------------
+
+[[modems]]
+imei = "860123456789001"
+carrier = "att"
+label = "AT&T"
+apn = "broadband"
+
+[[modems]]
+imei = "860123456789002"
+carrier = "tmobile"
+label = "T-Mobile"
+apn = "fast.t-mobile.com"
+
+[[modems]]
+imei = "860123456789003"
+carrier = "verizon"
+label = "Verizon"
+apn = "vzwinternet"

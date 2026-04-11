@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "5gbench"
+version = "0.1.0"
+description = "5G Tri-Carrier Benchmarking Tool for drive testing with Quectel RM520N-GL modems"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.11"
+dependencies = [
+    "pyserial>=3.5",
+    "rich>=13.0",
+    "textual>=0.50",
+    "fastapi>=0.110",
+    "uvicorn>=0.27",
+    "websockets>=12.0",
+]
+
+[project.scripts]
+5gbench = "fivegbench.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
