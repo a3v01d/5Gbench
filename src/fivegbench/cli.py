@@ -215,6 +215,8 @@ async def _run_app(cfg: Config, quiet: bool) -> None:
     if not quiet and cfg.tui.enabled:
         from fivegbench.tui.dashboard import Dashboard
         tui = Dashboard(cfg, bus, session_mgr)
+        tui.on_throughput = throughput_collector.trigger_now
+        tui.on_latency = latency_collector.trigger_now
 
     # ── Start session ──────────────────────────────────────────────
     await session_mgr.start(**meta)
@@ -322,6 +324,44 @@ def cmd_preflight(args: argparse.Namespace) -> None:
     sys.exit(0 if ok else 1)
 
 
+def cmd_export(args: argparse.Namespace) -> None:
+    """Handle: 5gbench export"""
+    from fivegbench.export import export, list_sessions
+
+    db_path = Path(args.db)
+    if not db_path.exists():
+        print(f"Error: database path not found: {db_path}", file=sys.stderr)
+        sys.exit(1)
+
+    # --list: just print session IDs and exit
+    if getattr(args, "list", False):
+        sessions = list_sessions(db_path, session_id=getattr(args, "session", None))
+        if not sessions:
+            print("No sessions found.")
+        for s in sessions:
+            end = s.get("end_time") or "running"
+            print(
+                f"{s['session_id']}  start={s['start_time']}  end={end}"
+                f"  operator={s.get('operator') or '—'}"
+            )
+        return
+
+    fmt = args.format
+    output_path: Path | None = Path(args.output) if args.output else None
+    session_id: str | None = getattr(args, "session", None)
+
+    try:
+        content = export(db_path, fmt, output=output_path, session_id=session_id)
+    except ValueError as exc:
+        print(f"Export error: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+    if output_path:
+        print(f"Exported {fmt.upper()} → {output_path}  ({len(content)} bytes)")
+    else:
+        print(content)
+
+
 def _load_config(args: argparse.Namespace) -> Config:
     config_path = getattr(args, "config", None) or CONFIG_PATH
     try:
@@ -382,6 +422,34 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p_pf.add_argument("--debug", action="store_true")
     p_pf.set_defaults(func=cmd_preflight)
+
+    # ── export ─────────────────────────────────────────────────────
+    p_ex = sub.add_parser(
+        "export",
+        help="Export drive-test data to GeoJSON, KML, or CSV",
+    )
+    p_ex.add_argument(
+        "--db", metavar="PATH", default="~/.local/share/5gbench/db",
+        help="Path to database directory or single .db file",
+    )
+    p_ex.add_argument(
+        "--format", "-f", metavar="FORMAT", default="geojson",
+        choices=["geojson", "kml", "csv"],
+        help="Output format: geojson (default), kml, csv",
+    )
+    p_ex.add_argument(
+        "--session", metavar="SESSION_ID",
+        help="Filter to a specific session ID (default: all sessions)",
+    )
+    p_ex.add_argument(
+        "--output", "-o", metavar="FILE",
+        help="Write output to FILE instead of stdout",
+    )
+    p_ex.add_argument(
+        "--list", action="store_true",
+        help="List available sessions and exit",
+    )
+    p_ex.set_defaults(func=cmd_export)
 
     return parser
 

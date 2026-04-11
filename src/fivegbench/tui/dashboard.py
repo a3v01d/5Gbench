@@ -136,13 +136,13 @@ class Dashboard:
         self._labels: dict[str, str] = {m.carrier: m.label for m in cfg.modems}
         self._carrier_order: list[str] = [m.carrier for m in cfg.modems]
 
-        # Hotkey callbacks (set by CLI layer)
-        self.on_start: "asyncio.Future | None" = None
-        self.on_pause: "asyncio.Future | None" = None
-        self.on_resume: "asyncio.Future | None" = None
-        self.on_quit: "asyncio.Future | None" = None
-        self.on_throughput: "asyncio.Future | None" = None
-        self.on_latency: "asyncio.Future | None" = None
+        # Hotkey callbacks (set by CLI layer) — plain callables (no args)
+        self.on_start: "Any | None" = None
+        self.on_pause: "Any | None" = None
+        self.on_resume: "Any | None" = None
+        self.on_quit: "Any | None" = None
+        self.on_throughput: "Any | None" = None  # called with no args
+        self.on_latency: "Any | None" = None     # called with no args
 
     # ------------------------------------------------------------------
     # Message consumer
@@ -390,6 +390,14 @@ class Dashboard:
         elif ch == "q":
             await self._session.stop()
             self._running = False
+        elif ch == "t":
+            if self.on_throughput is not None:
+                self.on_throughput()
+                self._last_log = "On-demand throughput test triggered."
+        elif ch == "l":
+            if self.on_latency is not None:
+                self.on_latency()
+                self._last_log = "On-demand latency test triggered."
 
     # ------------------------------------------------------------------
     # Main render loop
