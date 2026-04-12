@@ -233,19 +233,20 @@ async def check_namespace_ops() -> tuple[bool, str]:
 
 async def check_gnss(cfg: Config) -> tuple[bool, str]:
     """Primary GNSS modem is acquiring or has a fix."""
+    # Early-return paths that don't need hardware imports
+    if not cfg.modems:
+        return True, "No modems configured — GNSS check skipped"
+    primary_carrier = cfg.gnss.primary_modem
+    if not primary_carrier:
+        primary_modem = cfg.modems[0]   # auto-select first
+    else:
+        primary_modem = next((m for m in cfg.modems if m.carrier == primary_carrier), None)
+    if not primary_modem:
+        return False, f"gnss.primary_modem '{primary_carrier}' not found in modems list"
     try:
         from fivegbench.modem.discovery import discover_modems
         from fivegbench.modem.serial import ATSerial
         from fivegbench.modem.parser import parse_gnss_fix
-        if not cfg.modems:
-            return True, "No modems configured — GNSS check skipped"
-        primary_carrier = cfg.gnss.primary_modem
-        if not primary_carrier:
-            primary_modem = cfg.modems[0]   # auto-select first
-        else:
-            primary_modem = next((m for m in cfg.modems if m.carrier == primary_carrier), None)
-        if not primary_modem:
-            return False, f"gnss.primary_modem '{primary_carrier}' not found in modems list"
         found = await discover_modems([primary_modem.imei])
         info = found.get(primary_modem.imei)
         if not info:
