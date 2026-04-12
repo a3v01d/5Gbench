@@ -612,7 +612,7 @@ class TestMultiCarrier:
         vzwm = _make_modem_config("verizon", "333333333333333")
         monitor, _, _ = _make_monitor([attm, tmobm, vzwm])
         h = monitor.all_health()
-        assert len(h) == 3
+        assert set(h.keys()) == {"att", "tmobile", "verizon"}
         assert all(v == CarrierHealth.UNKNOWN for v in h.values())
 
 

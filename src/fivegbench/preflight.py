@@ -42,7 +42,7 @@ def _print_result(label: str, ok: bool | None, detail: str) -> None:
 async def check_config(cfg: Config) -> tuple[bool, str]:
     """Config file exists, parsed, and has required fields."""
     if not cfg.modems:
-        return False, "No [[modems]] entries defined"
+        return None, "No modems defined — running in no-hardware / test mode"
     for m in cfg.modems:
         if not m.imei or not m.carrier or not m.apn:
             return False, f"Modem {m.carrier!r} missing imei/carrier/apn"
@@ -237,10 +237,15 @@ async def check_gnss(cfg: Config) -> tuple[bool, str]:
         from fivegbench.modem.discovery import discover_modems
         from fivegbench.modem.serial import ATSerial
         from fivegbench.modem.parser import parse_gnss_fix
+        if not cfg.modems:
+            return True, "No modems configured — GNSS check skipped"
         primary_carrier = cfg.gnss.primary_modem
-        primary_modem = next((m for m in cfg.modems if m.carrier == primary_carrier), None)
+        if not primary_carrier:
+            primary_modem = cfg.modems[0]   # auto-select first
+        else:
+            primary_modem = next((m for m in cfg.modems if m.carrier == primary_carrier), None)
         if not primary_modem:
-            return False, f"Primary GNSS modem '{primary_carrier}' not in config"
+            return False, f"gnss.primary_modem '{primary_carrier}' not found in modems list"
         found = await discover_modems([primary_modem.imei])
         info = found.get(primary_modem.imei)
         if not info:

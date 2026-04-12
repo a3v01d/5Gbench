@@ -1,6 +1,6 @@
 """TUI dashboard using Rich Live display.
 
-Shows a continuously-updated 3-column modem status panel, GNSS status bar,
+Shows a continuously-updated modem status panel, GNSS status bar,
 and session header.  Hotkeys are handled via a background keyboard reader.
 
 Layout:
@@ -345,7 +345,10 @@ class Dashboard:
         layout["header"].update(self._render_header())
 
         modem_panels = [self._render_modem_panel(c) for c in self._carrier_order]
-        layout["modems"].update(Columns(modem_panels, equal=True, expand=True))
+        if not modem_panels:
+            layout["modems"].update(Panel("[dim]No modems configured.[/]", border_style="dim"))
+        else:
+            layout["modems"].update(Columns(modem_panels, equal=True, expand=True))
 
         layout["gnss"].update(self._render_gnss_bar())
         layout["footer"].update(self._render_footer())
