@@ -245,7 +245,7 @@ async def check_gnss(cfg: Config) -> tuple[bool, str]:
         return False, f"gnss.primary_modem '{primary_carrier}' not found in modems list"
     try:
         from fivegbench.modem.discovery import discover_modems
-        from fivegbench.modem.serial import ATSerial
+        from fivegbench.modem.serial import ATSerial, ATError
         from fivegbench.modem.parser import parse_gnss_fix
         found = await discover_modems([primary_modem.imei])
         info = found.get(primary_modem.imei)
@@ -254,7 +254,13 @@ async def check_gnss(cfg: Config) -> tuple[bool, str]:
         async with ATSerial(info["at_port"]) as at:
             await at.enable_gnss()
             await asyncio.sleep(1.0)  # brief wait for GNSS to respond
-            resp = await at.get_gnss_fix()
+            try:
+                resp = await at.get_gnss_fix()
+            except ATError as exc:
+                # CME ERROR 516 = "Not fixed now" — engine is active but no fix yet
+                if "516" in str(exc):
+                    return None, "GNSS engine active, no fix yet (CME ERROR 516) — normal if recently powered on"
+                raise
             fix = parse_gnss_fix(resp)
             if fix.get("fix_type") in ("2d", "3d"):
                 return True, f"Fix: {fix['fix_type']}, sats={fix.get('satellites')}"
