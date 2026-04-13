@@ -481,7 +481,7 @@ def create_app(state: "AppState | None" = None) -> "FastAPI":
             },
             "api": {
                 "enabled": c.api.enabled,
-                "host": c.api.host,
+                "host": c.api.bind,
                 "port": c.api.port,
             },
         }
