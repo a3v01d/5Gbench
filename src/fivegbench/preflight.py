@@ -193,10 +193,11 @@ async def check_network_registration(cfg: Config) -> tuple[bool, str]:
 
 
 async def check_mm_connected(cfg: Config) -> tuple[bool, str]:
-    """ModemManager shows connected state for each modem."""
+    """ModemManager shows connected or registered state for each modem."""
     try:
         from fivegbench.modem.manager import find_modem_by_imei, get_modem_state, ModemState
         results: list[str] = []
+        warnings: list[str] = []
         failures: list[str] = []
         for modem_cfg in cfg.modems:
             idx = await find_modem_by_imei(modem_cfg.imei)
@@ -204,12 +205,21 @@ async def check_mm_connected(cfg: Config) -> tuple[bool, str]:
                 failures.append(f"{modem_cfg.carrier}: not in MM")
                 continue
             state = await get_modem_state(idx)
-            if state == ModemState.CONNECTED:
-                results.append(f"{modem_cfg.carrier}:connected")
+            if state in (ModemState.CONNECTED, ModemState.REGISTERED):
+                results.append(f"{modem_cfg.carrier}:{state.value}")
+            elif state == ModemState.DISABLED:
+                warnings.append(
+                    f"{modem_cfg.carrier}:disabled (run: mmcli -m {idx} --enable)"
+                )
+            elif state in (ModemState.DISCONNECTED, ModemState.CONNECTING):
+                warnings.append(f"{modem_cfg.carrier}:{state.value}")
             else:
+                # FAILED, UNKNOWN
                 failures.append(f"{modem_cfg.carrier}:{state.value}")
         if failures:
-            return False, "; ".join(failures)
+            return False, "; ".join(failures + warnings)
+        if warnings:
+            return None, "; ".join(warnings + results)
         return True, "; ".join(results)
     except Exception as exc:
         return False, str(exc)
