@@ -86,9 +86,16 @@ class GNSSCollector:
 
         # Build ordered list of modems for failover: primary first, then chain
         modem_map = {m.carrier: m for m in cfg.modems}
-        primary = self._gnss_cfg.primary_modem
-        order = [primary] + [c for c in self._gnss_cfg.failover_order if c != primary]
-        self._modem_order: list[ModemConfig] = [modem_map[c] for c in order if c in modem_map]
+        if not modem_map:
+            self._modem_order: list[ModemConfig] = []
+        else:
+            primary = self._gnss_cfg.primary_modem or next(iter(modem_map))
+            if self._gnss_cfg.failover_order:
+                order = [primary] + [c for c in self._gnss_cfg.failover_order if c != primary]
+            else:
+                # No explicit order — primary first, then remaining in config order
+                order = [primary] + [c for c in modem_map if c != primary]
+            self._modem_order = [modem_map[c] for c in order if c in modem_map]
 
         self._active_index = 0   # index into _modem_order
 

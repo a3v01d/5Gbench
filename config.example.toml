@@ -24,8 +24,8 @@ route_description = ""  # Pre-fill route description
 notes = ""              # Pre-fill session notes
 
 [gnss]
-primary_modem = "att"                       # Carrier label of primary GNSS source
-failover_order = ["tmobile", "verizon"]     # Failover chain if primary loses fix
+# primary_modem = "att"          # Blank or omitted: use first [[modems]] entry
+# failover_order = ["tmobile"]   # Blank or omitted: cycle remaining modems in order
 movement_threshold_meters = 5.0             # Min position change to write a new GNSS row
 interpolate_on_fix_loss = true              # Interpolate from last known fix when all modems lose fix
 
@@ -60,8 +60,10 @@ api_key = ""            # Required if auth = "apikey"
 enabled = true          # false disables TUI (equivalent to --quiet)
 
 # ---------------------------------------------------------------------------
-# Modem definitions — add one [[modems]] section per physical modem.
-# Find the IMEI with: mmcli -m 0 | grep imei  (repeat for -m 1, -m 2)
+# Modem definitions — add one [[modems]] block per physical modem.
+# Supports 0–8 entries. With 0 entries the app runs in no-hardware/test mode
+# (no RF, throughput, or GNSS data).
+# Find the IMEI with: mmcli -m 0 | grep imei  (repeat for -m 1, -m 2, ...)
 # ---------------------------------------------------------------------------
 
 [[modems]]

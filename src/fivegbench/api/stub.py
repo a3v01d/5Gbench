@@ -163,10 +163,6 @@ def _db_for_session(db_path: Path, session_id: str) -> Path:
     return db_path / f"5gbench_{date_str}.db"
 
 
-def _db_today(db_path: Path) -> Path:
-    return db_path / f"5gbench_{datetime.now().strftime('%Y%m%d')}.db"
-
-
 def _open_ro(db_file: Path) -> sqlite3.Connection:
     con = sqlite3.connect(f"file:{db_file}?mode=ro", uri=True)
     con.row_factory = sqlite3.Row
@@ -479,6 +475,9 @@ def create_app(state: "AppState | None" = None) -> "FastAPI":
                 "methods": c.latency.methods,
                 "targets": c.latency.targets,
             },
+            "tui": {
+                "enabled": c.tui.enabled,
+            },
             "api": {
                 "enabled": c.api.enabled,
                 "host": c.api.bind,
@@ -490,9 +489,13 @@ def create_app(state: "AppState | None" = None) -> "FastAPI":
     # PATCH /v1/config
     # ------------------------------------------------------------------
 
-    _PATCHABLE = {
-        "rf_interval_seconds", "throughput_interval_seconds",
-        "gnss_interval_seconds", "neighbor_cells",
+    # Maps body key → (config section name, attribute name)
+    _PATCHABLE: dict[str, tuple[str, str]] = {
+        "rf_interval_seconds":           ("polling", "rf_interval_seconds"),
+        "throughput_interval_seconds":   ("polling", "throughput_interval_seconds"),
+        "gnss_interval_seconds":         ("polling", "gnss_interval_seconds"),
+        "neighbor_cells":                ("polling", "neighbor_cells"),
+        "tui_enabled":                   ("tui",     "enabled"),
     }
 
     @app.patch("/v1/config", dependencies=[Depends(_check_auth)])
@@ -503,9 +506,14 @@ def create_app(state: "AppState | None" = None) -> "FastAPI":
         applied: dict[str, Any] = {}
         rejected: list[str] = []
         for key, val in body.items():
-            if key in _PATCHABLE and hasattr(s.cfg.polling, key):
-                setattr(s.cfg.polling, key, val)
-                applied[key] = val
+            if key in _PATCHABLE:
+                section_name, attr = _PATCHABLE[key]
+                section = getattr(s.cfg, section_name, None)
+                if section is not None and hasattr(section, attr):
+                    setattr(section, attr, val)
+                    applied[key] = val
+                else:
+                    rejected.append(key)
             else:
                 rejected.append(key)
         return {"applied": applied, "rejected": rejected}
@@ -559,13 +567,54 @@ def create_app(state: "AppState | None" = None) -> "FastAPI":
         return _query_history(s.db_path, "latency_results", session_id, carrier, min(limit, 1000))
 
     # ------------------------------------------------------------------
+    # GET /v1/history/gnss
+    # ------------------------------------------------------------------
+
+    @app.get("/v1/history/gnss", dependencies=[Depends(_check_auth)])
+    async def get_gnss_history(
+        request: Request,
+        session_id: str,
+        limit: int = 1000,
+    ) -> list[dict]:
+        s: AppState = request.app.state.registry
+        if s.db_path is None:
+            return []
+        db_file = _db_for_session(s.db_path, session_id)
+        if not db_file.exists():
+            return []
+        try:
+            con = _open_ro(db_file)
+            with con:
+                rows = con.execute(
+                    "SELECT * FROM gnss WHERE session_id = ?"
+                    " ORDER BY timestamp DESC LIMIT ?",
+                    (session_id, min(limit, 10000)),
+                )
+                return _rows_to_list(rows)
+        except sqlite3.OperationalError:
+            return []
+
+    # ------------------------------------------------------------------
     # WS /v1/ws
     # ------------------------------------------------------------------
 
     @app.websocket("/v1/ws")
-    async def websocket_stream(websocket: WebSocket) -> None:
-        """Real-time telemetry stream — multiplexes all bus message types."""
+    async def websocket_stream(websocket: WebSocket, api_key: str = "") -> None:
+        """Real-time telemetry stream — multiplexes all bus message types.
+
+        When ``api.auth = "apikey"`` is configured, pass the key as a query
+        parameter: ``ws://host/v1/ws?api_key=<key>``
+        """
         s: AppState = websocket.app.state.registry  # type: ignore[attr-defined]
+
+        # Auth check before accepting — close with 4003 if invalid
+        cfg = s.cfg
+        if cfg is not None and getattr(cfg.api, "auth", "none") == "apikey":
+            expected = getattr(cfg.api, "api_key", "")
+            if api_key != expected:
+                await websocket.close(code=4003)
+                return
+
         await websocket.accept()
         q: asyncio.Queue = asyncio.Queue(maxsize=100)
         s.add_ws_queue(q)

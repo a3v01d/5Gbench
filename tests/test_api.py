@@ -19,7 +19,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from fastapi.testclient import TestClient
 
-from fivegbench.api.stub import AppState, create_app, _db_for_session, _db_today
+from fivegbench.api.stub import AppState, create_app, _db_for_session
 from fivegbench.db import SCHEMA_SQL
 from fivegbench.modem.health import CarrierHealth
 from fivegbench.session import SessionStatus
@@ -471,9 +471,21 @@ class TestConfig:
         r = client.get("/v1/config")
         assert "throughput" in r.json()
 
+    def test_config_has_tui(self, client):
+        r = client.get("/v1/config")
+        assert "tui" in r.json()
+        assert "enabled" in r.json()["tui"]
+
     def test_config_has_api(self, client):
         r = client.get("/v1/config")
         assert "api" in r.json()
+
+    def test_patch_tui_enabled(self, client, state):
+        state.cfg.tui.enabled = True
+        r = client.patch("/v1/config", json={"tui_enabled": False})
+        assert r.status_code == 200
+        assert "tui_enabled" in r.json()["applied"]
+        assert state.cfg.tui.enabled is False
 
     def test_patch_valid_field(self, client, state):
         r = client.patch("/v1/config", json={"rf_interval_seconds": 2.5})
@@ -558,6 +570,21 @@ class TestHistory:
 
     def test_no_db_returns_empty(self, client):
         r = client.get("/v1/history/rf", params={"session_id": "20260410_143022"})
+        assert r.json() == []
+
+    def test_gnss_history_200(self, db_client):
+        c, _ = db_client
+        r = c.get("/v1/history/gnss", params={"session_id": "20260410_143022"})
+        assert r.status_code == 200
+        assert isinstance(r.json(), list)
+
+    def test_gnss_history_unknown_session_empty(self, db_client):
+        c, _ = db_client
+        r = c.get("/v1/history/gnss", params={"session_id": "99991231_000000"})
+        assert r.json() == []
+
+    def test_gnss_history_no_db_empty(self, client):
+        r = client.get("/v1/history/gnss", params={"session_id": "20260410_143022"})
         assert r.json() == []
 
 
@@ -647,6 +674,46 @@ class TestWebSocket:
             assert len(state._ws_queues) == before + 1
         # After disconnect, queue should be removed
         assert len(state._ws_queues) == before
+
+    def test_ws_auth_correct_key_accepted(self):
+        s = _make_state()
+        s.cfg.api.auth = "apikey"
+        s.cfg.api.api_key = "ws_secret"
+        app = create_app(s)
+        c = TestClient(app)
+        # Correct key → connection accepted, queue registered
+        with c.websocket_connect("/v1/ws?api_key=ws_secret") as ws:
+            assert ws is not None
+
+    def test_ws_auth_wrong_key_closed(self):
+        s = _make_state()
+        s.cfg.api.auth = "apikey"
+        s.cfg.api.api_key = "ws_secret"
+        app = create_app(s)
+        c = TestClient(app)
+        import pytest as _pytest
+        with _pytest.raises(Exception):
+            # Wrong key → server closes with 4003 before accepting
+            with c.websocket_connect("/v1/ws?api_key=wrong"):
+                pass  # should not reach here
+
+    def test_ws_auth_no_key_closed(self):
+        s = _make_state()
+        s.cfg.api.auth = "apikey"
+        s.cfg.api.api_key = "ws_secret"
+        app = create_app(s)
+        c = TestClient(app)
+        import pytest as _pytest
+        with _pytest.raises(Exception):
+            with c.websocket_connect("/v1/ws"):
+                pass  # should not reach here
+
+    def test_ws_no_auth_config_accepted_without_key(self, state):
+        # state has auth="none" — no key required
+        app = create_app(state)
+        c = TestClient(app)
+        with c.websocket_connect("/v1/ws") as ws:
+            assert ws is not None
 
 
 # ---------------------------------------------------------------------------
@@ -775,8 +842,10 @@ class TestDbHelpers:
         assert p.name == "5gbench_20260410.db"
         assert p.parent == tmp_path
 
-    def test_db_today_format(self, tmp_path):
-        from datetime import datetime
-        p = _db_today(tmp_path)
-        expected_name = f"5gbench_{datetime.now().strftime('%Y%m%d')}.db"
-        assert p.name == expected_name
+    def test_db_for_session_date_extraction(self, tmp_path):
+        # Different session IDs should map to different DB files
+        p1 = _db_for_session(tmp_path, "20260410_143022")
+        p2 = _db_for_session(tmp_path, "20260411_090000")
+        assert p1.name == "5gbench_20260410.db"
+        assert p2.name == "5gbench_20260411.db"
+        assert p1 != p2

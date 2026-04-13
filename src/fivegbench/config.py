@@ -46,8 +46,8 @@ class SessionDefaults:
 
 @dataclass
 class GnssConfig:
-    primary_modem: str = "att"
-    failover_order: list[str] = field(default_factory=lambda: ["tmobile", "verizon"])
+    primary_modem: str = ""   # empty = use first modem in config order
+    failover_order: list[str] = field(default_factory=list)  # empty = remaining in config order
     movement_threshold_meters: float = 5.0
     interpolate_on_fix_loss: bool = True
 
@@ -156,8 +156,8 @@ def _load_session_defaults(raw: dict) -> SessionDefaults:
 
 def _load_gnss(raw: dict) -> GnssConfig:
     return GnssConfig(
-        primary_modem=raw.get("primary_modem", "att"),
-        failover_order=raw.get("failover_order", ["tmobile", "verizon"]),
+        primary_modem=raw.get("primary_modem", ""),
+        failover_order=raw.get("failover_order", []),
         movement_threshold_meters=float(raw.get("movement_threshold_meters", 5.0)),
         interpolate_on_fix_loss=bool(raw.get("interpolate_on_fix_loss", True)),
     )
@@ -225,8 +225,8 @@ def _load_api(raw: dict) -> ApiConfig:
 
 
 def _load_modems(raw_list: list[dict]) -> list[ModemConfig]:
-    if not raw_list:
-        raise ValueError("Config must define at least one [[modems]] entry.")
+    if len(raw_list) > 8:
+        raise ValueError("Config supports at most 8 [[modems]] entries.")
     modems = []
     for i, raw in enumerate(raw_list):
         for required in ("imei", "carrier", "label", "apn"):
@@ -261,6 +261,28 @@ def _load_modems(raw_list: list[dict]) -> list[ModemConfig]:
 
 
 # ---------------------------------------------------------------------------
+# Validation helpers
+# ---------------------------------------------------------------------------
+
+def _validate_gnss_carriers(gnss: GnssConfig, modems: list[ModemConfig]) -> None:
+    """Ensure GNSS primary/failover carrier names exist in the modem list."""
+    if not modems:
+        return  # 0-modem mode — GNSS simply won't get fixes
+    carrier_set = {m.carrier for m in modems}
+    if gnss.primary_modem and gnss.primary_modem not in carrier_set:
+        raise ValueError(
+            f"gnss.primary_modem '{gnss.primary_modem}' not in modems list "
+            f"(available: {sorted(carrier_set)})"
+        )
+    for c in gnss.failover_order:
+        if c not in carrier_set:
+            raise ValueError(
+                f"gnss.failover_order contains '{c}' which is not in modems list "
+                f"(available: {sorted(carrier_set)})"
+            )
+
+
+# ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
 
@@ -292,6 +314,7 @@ def load(path: Path | None = None) -> Config:
         tui=TuiConfig(enabled=bool(raw.get("tui", {}).get("enabled", True))),
         modems=_load_modems(raw.get("modems", [])),
     )
+    _validate_gnss_carriers(cfg.gnss, cfg.modems)
     return cfg
 
 

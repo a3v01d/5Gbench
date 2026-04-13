@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from fivegbench.config import load, Config, ModemConfig
+from fivegbench.config import load, Config, GnssConfig, ModemConfig
 
 
 # ---------------------------------------------------------------------------
@@ -48,7 +48,7 @@ FULL_TOML = """\
 
     [gnss]
     primary_modem = "att"
-    failover_order = ["tmobile", "verizon"]
+    failover_order = ["tmobile"]
     movement_threshold_meters = 10.0
     interpolate_on_fix_loss = false
 
@@ -165,7 +165,7 @@ class TestDefaults:
         assert self.cfg.api.enabled is False
 
     def test_default_gnss_primary(self):
-        assert self.cfg.gnss.primary_modem == "att"
+        assert self.cfg.gnss.primary_modem == ""
 
     def test_default_movement_threshold(self):
         assert self.cfg.gnss.movement_threshold_meters == 5.0
@@ -265,9 +265,9 @@ class TestModemConfig:
 # ---------------------------------------------------------------------------
 
 class TestValidationErrors:
-    def test_no_modems_raises(self):
-        with pytest.raises(ValueError, match="at least one"):
-            load(_write_toml("[general]\nlog_level = 'info'\n"))
+    def test_zero_modems_loads_ok(self):
+        cfg = load(_write_toml("[general]\nlog_level = 'info'\n"))
+        assert cfg.modems == []
 
     def test_invalid_imei_too_short(self):
         toml = """\
@@ -359,3 +359,36 @@ class TestValidationErrors:
         toml = MINIMAL_TOML + "\n[api]\nauth = 'oauth'\n"
         with pytest.raises(ValueError, match="api.auth"):
             load(_write_toml(toml))
+
+    def test_nine_modems_raises(self):
+        blocks = ""
+        for i in range(9):
+            blocks += f"""
+[[modems]]
+imei = "86012345678{i:04d}"
+carrier = "carrier{i}"
+label = "Carrier {i}"
+apn = "apn{i}.example.com"
+"""
+        with pytest.raises(ValueError, match="at most 8"):
+            load(_write_toml(blocks))
+
+    def test_gnss_primary_not_in_modems_raises(self):
+        toml = MINIMAL_TOML + "\n[gnss]\nprimary_modem = 'sprint'\n"
+        with pytest.raises(ValueError, match="gnss.primary_modem"):
+            load(_write_toml(toml))
+
+    def test_gnss_failover_not_in_modems_raises(self):
+        toml = MINIMAL_TOML + '\n[gnss]\nfailover_order = ["sprint"]\n'
+        with pytest.raises(ValueError, match="gnss.failover_order"):
+            load(_write_toml(toml))
+
+    def test_gnss_empty_primary_valid(self):
+        toml = MINIMAL_TOML + '\n[gnss]\nprimary_modem = ""\n'
+        cfg = load(_write_toml(toml))
+        assert cfg.gnss.primary_modem == ""
+
+    def test_gnss_defaults_no_hardcoded_carriers(self):
+        g = GnssConfig()
+        assert g.primary_modem == ""
+        assert g.failover_order == []
