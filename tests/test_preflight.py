@@ -164,6 +164,47 @@ class TestCheckGnssEarlyReturn:
         assert ok is False
         assert "sprint" in detail
 
+    @pytest.mark.asyncio
+    async def test_cme_516_returns_warn_not_fail(self):
+        """CME ERROR 516 (not fixed now) should yield WARN, not FAIL."""
+        import sys
+        from unittest.mock import AsyncMock, MagicMock, patch
+
+        # Local ATError — avoids importing pyserial in the test environment
+        class FakeATError(Exception):
+            pass
+
+        cfg = _make_cfg(1)
+
+        mock_at = AsyncMock()
+        mock_at.enable_gnss = AsyncMock()
+        mock_at.get_gnss_fix = AsyncMock(side_effect=FakeATError("+CME ERROR: 516"))
+        mock_at.__aenter__ = AsyncMock(return_value=mock_at)
+        mock_at.__aexit__ = AsyncMock(return_value=None)
+
+        # Mock the three hardware modules that check_gnss imports dynamically
+        mock_serial_mod = MagicMock()
+        mock_serial_mod.ATError = FakeATError
+        mock_serial_mod.ATSerial = MagicMock(return_value=mock_at)
+
+        mock_discovery_mod = MagicMock()
+        mock_discovery_mod.discover_modems = AsyncMock(return_value={
+            "860000000000001": {"at_port": "/dev/ttyUSB3"},  # 15-digit IMEI matches _make_modem(idx=1)
+        })
+
+        mock_parser_mod = MagicMock()
+        mock_parser_mod.parse_gnss_fix = MagicMock(return_value={"fix_type": "no_fix"})
+
+        with patch.dict(sys.modules, {
+            "fivegbench.modem.serial": mock_serial_mod,
+            "fivegbench.modem.discovery": mock_discovery_mod,
+            "fivegbench.modem.parser": mock_parser_mod,
+        }), patch("asyncio.sleep", AsyncMock()):
+            ok, detail = await check_gnss(cfg)
+
+        assert ok is None
+        assert "516" in detail or "no fix" in detail.lower()
+
 
 # ---------------------------------------------------------------------------
 # run_preflight — skip_hardware=True
