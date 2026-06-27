@@ -1,0 +1,671 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00000000000000000000001E /* CommandDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001D /* CommandDispatcher.swift */; };
+		000000000000000000000020 /* CommandParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001F /* CommandParser.swift */; };
+		000000000000000000000022 /* CommandRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000021 /* CommandRegistry.swift */; };
+		000000000000000000000024 /* IRCApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000023 /* IRCApp.swift */; };
+		000000000000000000000026 /* AppSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000025 /* AppSchema.swift */; };
+		000000000000000000000028 /* ChannelConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000027 /* ChannelConfig.swift */; };
+		00000000000000000000002A /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000029 /* Message.swift */; };
+		00000000000000000000002C /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002B /* ServerConfig.swift */; };
+		00000000000000000000002E /* UserRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002D /* UserRecord.swift */; };
+		000000000000000000000030 /* IRCConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002F /* IRCConnection.swift */; };
+		000000000000000000000032 /* IRCConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000031 /* IRCConnectionDelegate.swift */; };
+		000000000000000000000034 /* LineFramer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000033 /* LineFramer.swift */; };
+		000000000000000000000036 /* ReconnectPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000035 /* ReconnectPolicy.swift */; };
+		000000000000000000000038 /* TLSConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000037 /* TLSConfiguration.swift */; };
+		00000000000000000000003A /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000039 /* BackgroundTaskManager.swift */; };
+		00000000000000000000003C /* MentionDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003B /* MentionDetector.swift */; };
+		00000000000000000000003E /* PushNotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003D /* PushNotificationHandler.swift */; };
+		000000000000000000000040 /* CTCPMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003F /* CTCPMessage.swift */; };
+		000000000000000000000042 /* IRCCapability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000041 /* IRCCapability.swift */; };
+		000000000000000000000044 /* IRCCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000043 /* IRCCommand.swift */; };
+		000000000000000000000046 /* IRCMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000045 /* IRCMessage.swift */; };
+		000000000000000000000048 /* IRCMessageEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000047 /* IRCMessageEncoder.swift */; };
+		00000000000000000000004A /* IRCMessageParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000049 /* IRCMessageParser.swift */; };
+		00000000000000000000004C /* IRCMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000004B /* IRCMode.swift */; };
+		00000000000000000000004E /* IRCNumeric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000004D /* IRCNumeric.swift */; };
+		000000000000000000000050 /* SASLEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000004F /* SASLEngine.swift */; };
+		000000000000000000000052 /* CapabilityNegotiator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000051 /* CapabilityNegotiator.swift */; };
+		000000000000000000000054 /* ChannelSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000053 /* ChannelSession.swift */; };
+		000000000000000000000056 /* IRCSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000055 /* IRCSession.swift */; };
+		000000000000000000000058 /* IRCSessionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000057 /* IRCSessionState.swift */; };
+		00000000000000000000005A /* RegistrationFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000059 /* RegistrationFlow.swift */; };
+		00000000000000000000005C /* ServerInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000005B /* ServerInfo.swift */; };
+		00000000000000000000005E /* UserSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000005D /* UserSession.swift */; };
+		000000000000000000000060 /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000005F /* AppStore.swift */; };
+		000000000000000000000062 /* ChannelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000061 /* ChannelStore.swift */; };
+		000000000000000000000064 /* NavigationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000063 /* NavigationStore.swift */; };
+		000000000000000000000066 /* NotificationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000065 /* NotificationStore.swift */; };
+		000000000000000000000068 /* ServerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000067 /* ServerStore.swift */; };
+		00000000000000000000006A /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000069 /* RootView.swift */; };
+		00000000000000000000006C /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006B /* SidebarView.swift */; };
+		00000000000000000000006E /* ChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006D /* ChannelView.swift */; };
+		000000000000000000000070 /* InputBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006F /* InputBarView.swift */; };
+		000000000000000000000072 /* MessageListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000071 /* MessageListView.swift */; };
+		000000000000000000000074 /* MessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000073 /* MessageRowView.swift */; };
+		000000000000000000000076 /* TopicBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000075 /* TopicBarView.swift */; };
+		000000000000000000000078 /* UserListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000077 /* UserListView.swift */; };
+		00000000000000000000007A /* MentionHighlightModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000079 /* MentionHighlightModifier.swift */; };
+		00000000000000000000007C /* NickPillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000007B /* NickPillView.swift */; };
+		00000000000000000000007E /* StatusDotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000007D /* StatusDotView.swift */; };
+		000000000000000000000080 /* TimestampView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000007F /* TimestampView.swift */; };
+		000000000000000000000082 /* DMListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000081 /* DMListView.swift */; };
+		000000000000000000000084 /* DMView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000083 /* DMView.swift */; };
+		000000000000000000000086 /* AddServerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000085 /* AddServerView.swift */; };
+		000000000000000000000088 /* ServerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000087 /* ServerDetailView.swift */; };
+		00000000000000000000008A /* ServerRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000089 /* ServerRowView.swift */; };
+		00000000000000000000008C /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000008B /* NotificationSettingsView.swift */; };
+		00000000000000000000008E /* ServerSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000008D /* ServerSettingsView.swift */; };
+		000000000000000000000090 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000008F /* SettingsView.swift */; };
+		000000000000000000000092 /* Date+IRC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000091 /* Date+IRC.swift */; };
+		000000000000000000000094 /* HapticEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000093 /* HapticEngine.swift */; };
+		000000000000000000000096 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000095 /* Keychain.swift */; };
+		000000000000000000000098 /* Logger+IRC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000097 /* Logger+IRC.swift */; };
+		00000000000000000000009A /* String+IRC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000099 /* String+IRC.swift */; };
+		00000000000000000000009C /* CommandParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000009B /* CommandParserTests.swift */; };
+		00000000000000000000009E /* IRCFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000009D /* IRCFixtures.swift */; };
+		0000000000000000000000A0 /* CTCPTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000009F /* CTCPTests.swift */; };
+		0000000000000000000000A2 /* IRCMessageEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000000000000000A1 /* IRCMessageEncoderTests.swift */; };
+		0000000000000000000000A4 /* IRCMessageParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000000000000000A3 /* IRCMessageParserTests.swift */; };
+		0000000000000000000000A6 /* IRCModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000000000000000A5 /* IRCModeTests.swift */; };
+		0000000000000000000000A8 /* SASLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000000000000000A7 /* SASLTests.swift */; };
+		0000000000000000000000AA /* CapabilityNegotiatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000000000000000A9 /* CapabilityNegotiatorTests.swift */; };
+		0000000000000000000000AC /* ServerInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000000000000000AB /* ServerInfoTests.swift */; };
+		0000000000000000000000AE /* IRCUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000000000000000AD /* IRCUITests.swift */; };
+		0000000000000000000000B0 /* IRCUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000000000000000AF /* IRCUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		000000000000000000000007 /* IRC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IRC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		000000000000000000000008 /* IRCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IRCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		000000000000000000000009 /* IRCUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IRCUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00000000000000000000001D /* CommandDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandDispatcher.swift; sourceTree = "<group>"; };
+		00000000000000000000001F /* CommandParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandParser.swift; sourceTree = "<group>"; };
+		000000000000000000000021 /* CommandRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandRegistry.swift; sourceTree = "<group>"; };
+		000000000000000000000023 /* IRCApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCApp.swift; sourceTree = "<group>"; };
+		000000000000000000000025 /* AppSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSchema.swift; sourceTree = "<group>"; };
+		000000000000000000000027 /* ChannelConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelConfig.swift; sourceTree = "<group>"; };
+		000000000000000000000029 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		00000000000000000000002B /* ServerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfig.swift; sourceTree = "<group>"; };
+		00000000000000000000002D /* UserRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRecord.swift; sourceTree = "<group>"; };
+		00000000000000000000002F /* IRCConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCConnection.swift; sourceTree = "<group>"; };
+		000000000000000000000031 /* IRCConnectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCConnectionDelegate.swift; sourceTree = "<group>"; };
+		000000000000000000000033 /* LineFramer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineFramer.swift; sourceTree = "<group>"; };
+		000000000000000000000035 /* ReconnectPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconnectPolicy.swift; sourceTree = "<group>"; };
+		000000000000000000000037 /* TLSConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TLSConfiguration.swift; sourceTree = "<group>"; };
+		000000000000000000000039 /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
+		00000000000000000000003B /* MentionDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MentionDetector.swift; sourceTree = "<group>"; };
+		00000000000000000000003D /* PushNotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationHandler.swift; sourceTree = "<group>"; };
+		00000000000000000000003F /* CTCPMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTCPMessage.swift; sourceTree = "<group>"; };
+		000000000000000000000041 /* IRCCapability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCCapability.swift; sourceTree = "<group>"; };
+		000000000000000000000043 /* IRCCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCCommand.swift; sourceTree = "<group>"; };
+		000000000000000000000045 /* IRCMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCMessage.swift; sourceTree = "<group>"; };
+		000000000000000000000047 /* IRCMessageEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCMessageEncoder.swift; sourceTree = "<group>"; };
+		000000000000000000000049 /* IRCMessageParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCMessageParser.swift; sourceTree = "<group>"; };
+		00000000000000000000004B /* IRCMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCMode.swift; sourceTree = "<group>"; };
+		00000000000000000000004D /* IRCNumeric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCNumeric.swift; sourceTree = "<group>"; };
+		00000000000000000000004F /* SASLEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SASLEngine.swift; sourceTree = "<group>"; };
+		000000000000000000000051 /* CapabilityNegotiator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapabilityNegotiator.swift; sourceTree = "<group>"; };
+		000000000000000000000053 /* ChannelSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelSession.swift; sourceTree = "<group>"; };
+		000000000000000000000055 /* IRCSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCSession.swift; sourceTree = "<group>"; };
+		000000000000000000000057 /* IRCSessionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCSessionState.swift; sourceTree = "<group>"; };
+		000000000000000000000059 /* RegistrationFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationFlow.swift; sourceTree = "<group>"; };
+		00000000000000000000005B /* ServerInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerInfo.swift; sourceTree = "<group>"; };
+		00000000000000000000005D /* UserSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSession.swift; sourceTree = "<group>"; };
+		00000000000000000000005F /* AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
+		000000000000000000000061 /* ChannelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelStore.swift; sourceTree = "<group>"; };
+		000000000000000000000063 /* NavigationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStore.swift; sourceTree = "<group>"; };
+		000000000000000000000065 /* NotificationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationStore.swift; sourceTree = "<group>"; };
+		000000000000000000000067 /* ServerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerStore.swift; sourceTree = "<group>"; };
+		000000000000000000000069 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		00000000000000000000006B /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
+		00000000000000000000006D /* ChannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelView.swift; sourceTree = "<group>"; };
+		00000000000000000000006F /* InputBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputBarView.swift; sourceTree = "<group>"; };
+		000000000000000000000071 /* MessageListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListView.swift; sourceTree = "<group>"; };
+		000000000000000000000073 /* MessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRowView.swift; sourceTree = "<group>"; };
+		000000000000000000000075 /* TopicBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicBarView.swift; sourceTree = "<group>"; };
+		000000000000000000000077 /* UserListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListView.swift; sourceTree = "<group>"; };
+		000000000000000000000079 /* MentionHighlightModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MentionHighlightModifier.swift; sourceTree = "<group>"; };
+		00000000000000000000007B /* NickPillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NickPillView.swift; sourceTree = "<group>"; };
+		00000000000000000000007D /* StatusDotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusDotView.swift; sourceTree = "<group>"; };
+		00000000000000000000007F /* TimestampView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimestampView.swift; sourceTree = "<group>"; };
+		000000000000000000000081 /* DMListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DMListView.swift; sourceTree = "<group>"; };
+		000000000000000000000083 /* DMView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DMView.swift; sourceTree = "<group>"; };
+		000000000000000000000085 /* AddServerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddServerView.swift; sourceTree = "<group>"; };
+		000000000000000000000087 /* ServerDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerDetailView.swift; sourceTree = "<group>"; };
+		000000000000000000000089 /* ServerRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerRowView.swift; sourceTree = "<group>"; };
+		00000000000000000000008B /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
+		00000000000000000000008D /* ServerSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSettingsView.swift; sourceTree = "<group>"; };
+		00000000000000000000008F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		000000000000000000000091 /* Date+IRC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date+IRC.swift; sourceTree = "<group>"; };
+		000000000000000000000093 /* HapticEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticEngine.swift; sourceTree = "<group>"; };
+		000000000000000000000095 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
+		000000000000000000000097 /* Logger+IRC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger+IRC.swift; sourceTree = "<group>"; };
+		000000000000000000000099 /* String+IRC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String+IRC.swift; sourceTree = "<group>"; };
+		00000000000000000000009B /* CommandParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandParserTests.swift; sourceTree = "<group>"; };
+		00000000000000000000009D /* IRCFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCFixtures.swift; sourceTree = "<group>"; };
+		00000000000000000000009F /* CTCPTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTCPTests.swift; sourceTree = "<group>"; };
+		0000000000000000000000A1 /* IRCMessageEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCMessageEncoderTests.swift; sourceTree = "<group>"; };
+		0000000000000000000000A3 /* IRCMessageParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCMessageParserTests.swift; sourceTree = "<group>"; };
+		0000000000000000000000A5 /* IRCModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCModeTests.swift; sourceTree = "<group>"; };
+		0000000000000000000000A7 /* SASLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SASLTests.swift; sourceTree = "<group>"; };
+		0000000000000000000000A9 /* CapabilityNegotiatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapabilityNegotiatorTests.swift; sourceTree = "<group>"; };
+		0000000000000000000000AB /* ServerInfoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerInfoTests.swift; sourceTree = "<group>"; };
+		0000000000000000000000AD /* IRCUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCUITests.swift; sourceTree = "<group>"; };
+		0000000000000000000000AF /* IRCUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		000000000000000000000002 = {
+			isa = PBXGroup;
+			children = (0000000000000000000000B1 /* IRC */, 0000000000000000000000C1 /* IRCTests */, 0000000000000000000000C6 /* IRCUITests */, 000000000000000000000003 /* Products */,);
+			sourceTree = "<group>";
+		};
+		000000000000000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (000000000000000000000007 /* IRC.app */, 000000000000000000000008 /* IRCTests.xctest */, 000000000000000000000009 /* IRCUITests.xctest */,);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000B1 /* IRC */ = {
+			isa = PBXGroup;
+			children = (0000000000000000000000B2 /* Commands */, 0000000000000000000000B3 /* Models */, 0000000000000000000000B4 /* Network */, 0000000000000000000000B5 /* Notifications */, 0000000000000000000000B6 /* Protocol */, 0000000000000000000000B7 /* Session */, 0000000000000000000000B8 /* Store */, 0000000000000000000000B9 /* UI */, 0000000000000000000000C0 /* Utilities */, 000000000000000000000023 /* IRCApp.swift */,);
+			path = IRC;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000B2 /* Commands */ = {
+			isa = PBXGroup;
+			children = (00000000000000000000001D /* CommandDispatcher.swift */, 00000000000000000000001F /* CommandParser.swift */, 000000000000000000000021 /* CommandRegistry.swift */,);
+			path = Commands;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000B3 /* Models */ = {
+			isa = PBXGroup;
+			children = (000000000000000000000025 /* AppSchema.swift */, 000000000000000000000027 /* ChannelConfig.swift */, 000000000000000000000029 /* Message.swift */, 00000000000000000000002B /* ServerConfig.swift */, 00000000000000000000002D /* UserRecord.swift */,);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000B4 /* Network */ = {
+			isa = PBXGroup;
+			children = (00000000000000000000002F /* IRCConnection.swift */, 000000000000000000000031 /* IRCConnectionDelegate.swift */, 000000000000000000000033 /* LineFramer.swift */, 000000000000000000000035 /* ReconnectPolicy.swift */, 000000000000000000000037 /* TLSConfiguration.swift */,);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000B5 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (000000000000000000000039 /* BackgroundTaskManager.swift */, 00000000000000000000003B /* MentionDetector.swift */, 00000000000000000000003D /* PushNotificationHandler.swift */,);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000B6 /* Protocol */ = {
+			isa = PBXGroup;
+			children = (00000000000000000000003F /* CTCPMessage.swift */, 000000000000000000000041 /* IRCCapability.swift */, 000000000000000000000043 /* IRCCommand.swift */, 000000000000000000000045 /* IRCMessage.swift */, 000000000000000000000047 /* IRCMessageEncoder.swift */, 000000000000000000000049 /* IRCMessageParser.swift */, 00000000000000000000004B /* IRCMode.swift */, 00000000000000000000004D /* IRCNumeric.swift */, 00000000000000000000004F /* SASLEngine.swift */,);
+			path = Protocol;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000B7 /* Session */ = {
+			isa = PBXGroup;
+			children = (000000000000000000000051 /* CapabilityNegotiator.swift */, 000000000000000000000053 /* ChannelSession.swift */, 000000000000000000000055 /* IRCSession.swift */, 000000000000000000000057 /* IRCSessionState.swift */, 000000000000000000000059 /* RegistrationFlow.swift */, 00000000000000000000005B /* ServerInfo.swift */, 00000000000000000000005D /* UserSession.swift */,);
+			path = Session;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000B8 /* Store */ = {
+			isa = PBXGroup;
+			children = (00000000000000000000005F /* AppStore.swift */, 000000000000000000000061 /* ChannelStore.swift */, 000000000000000000000063 /* NavigationStore.swift */, 000000000000000000000065 /* NotificationStore.swift */, 000000000000000000000067 /* ServerStore.swift */,);
+			path = Store;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000B9 /* UI */ = {
+			isa = PBXGroup;
+			children = (0000000000000000000000BA /* App */, 0000000000000000000000BB /* Channel */, 0000000000000000000000BC /* Components */, 0000000000000000000000BD /* DM */, 0000000000000000000000BE /* Server */, 0000000000000000000000BF /* Settings */,);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000BA /* App */ = {
+			isa = PBXGroup;
+			children = (000000000000000000000069 /* RootView.swift */, 00000000000000000000006B /* SidebarView.swift */,);
+			path = App;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000BB /* Channel */ = {
+			isa = PBXGroup;
+			children = (00000000000000000000006D /* ChannelView.swift */, 00000000000000000000006F /* InputBarView.swift */, 000000000000000000000071 /* MessageListView.swift */, 000000000000000000000073 /* MessageRowView.swift */, 000000000000000000000075 /* TopicBarView.swift */, 000000000000000000000077 /* UserListView.swift */,);
+			path = Channel;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000BC /* Components */ = {
+			isa = PBXGroup;
+			children = (000000000000000000000079 /* MentionHighlightModifier.swift */, 00000000000000000000007B /* NickPillView.swift */, 00000000000000000000007D /* StatusDotView.swift */, 00000000000000000000007F /* TimestampView.swift */,);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000BD /* DM */ = {
+			isa = PBXGroup;
+			children = (000000000000000000000081 /* DMListView.swift */, 000000000000000000000083 /* DMView.swift */,);
+			path = DM;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000BE /* Server */ = {
+			isa = PBXGroup;
+			children = (000000000000000000000085 /* AddServerView.swift */, 000000000000000000000087 /* ServerDetailView.swift */, 000000000000000000000089 /* ServerRowView.swift */,);
+			path = Server;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000BF /* Settings */ = {
+			isa = PBXGroup;
+			children = (00000000000000000000008B /* NotificationSettingsView.swift */, 00000000000000000000008D /* ServerSettingsView.swift */, 00000000000000000000008F /* SettingsView.swift */,);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000C0 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (000000000000000000000091 /* Date+IRC.swift */, 000000000000000000000093 /* HapticEngine.swift */, 000000000000000000000095 /* Keychain.swift */, 000000000000000000000097 /* Logger+IRC.swift */, 000000000000000000000099 /* String+IRC.swift */,);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000C1 /* IRCTests */ = {
+			isa = PBXGroup;
+			children = (0000000000000000000000C2 /* Commands */, 0000000000000000000000C3 /* Fixtures */, 0000000000000000000000C4 /* Protocol */, 0000000000000000000000C5 /* Session */,);
+			path = IRCTests;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000C2 /* Commands */ = {
+			isa = PBXGroup;
+			children = (00000000000000000000009B /* CommandParserTests.swift */,);
+			path = Commands;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000C3 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (00000000000000000000009D /* IRCFixtures.swift */,);
+			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000C4 /* Protocol */ = {
+			isa = PBXGroup;
+			children = (00000000000000000000009F /* CTCPTests.swift */, 0000000000000000000000A1 /* IRCMessageEncoderTests.swift */, 0000000000000000000000A3 /* IRCMessageParserTests.swift */, 0000000000000000000000A5 /* IRCModeTests.swift */, 0000000000000000000000A7 /* SASLTests.swift */,);
+			path = Protocol;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000C5 /* Session */ = {
+			isa = PBXGroup;
+			children = (0000000000000000000000A9 /* CapabilityNegotiatorTests.swift */, 0000000000000000000000AB /* ServerInfoTests.swift */,);
+			path = Session;
+			sourceTree = "<group>";
+		};
+		0000000000000000000000C6 /* IRCUITests */ = {
+			isa = PBXGroup;
+			children = (0000000000000000000000AD /* IRCUITests.swift */, 0000000000000000000000AF /* IRCUITestsLaunchTests.swift */,);
+			path = IRCUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXSourcesBuildPhase section */
+		000000000000000000000016 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00000000000000000000001E /* CommandDispatcher.swift in Sources */,
+				000000000000000000000020 /* CommandParser.swift in Sources */,
+				000000000000000000000022 /* CommandRegistry.swift in Sources */,
+				000000000000000000000024 /* IRCApp.swift in Sources */,
+				000000000000000000000026 /* AppSchema.swift in Sources */,
+				000000000000000000000028 /* ChannelConfig.swift in Sources */,
+				00000000000000000000002A /* Message.swift in Sources */,
+				00000000000000000000002C /* ServerConfig.swift in Sources */,
+				00000000000000000000002E /* UserRecord.swift in Sources */,
+				000000000000000000000030 /* IRCConnection.swift in Sources */,
+				000000000000000000000032 /* IRCConnectionDelegate.swift in Sources */,
+				000000000000000000000034 /* LineFramer.swift in Sources */,
+				000000000000000000000036 /* ReconnectPolicy.swift in Sources */,
+				000000000000000000000038 /* TLSConfiguration.swift in Sources */,
+				00000000000000000000003A /* BackgroundTaskManager.swift in Sources */,
+				00000000000000000000003C /* MentionDetector.swift in Sources */,
+				00000000000000000000003E /* PushNotificationHandler.swift in Sources */,
+				000000000000000000000040 /* CTCPMessage.swift in Sources */,
+				000000000000000000000042 /* IRCCapability.swift in Sources */,
+				000000000000000000000044 /* IRCCommand.swift in Sources */,
+				000000000000000000000046 /* IRCMessage.swift in Sources */,
+				000000000000000000000048 /* IRCMessageEncoder.swift in Sources */,
+				00000000000000000000004A /* IRCMessageParser.swift in Sources */,
+				00000000000000000000004C /* IRCMode.swift in Sources */,
+				00000000000000000000004E /* IRCNumeric.swift in Sources */,
+				000000000000000000000050 /* SASLEngine.swift in Sources */,
+				000000000000000000000052 /* CapabilityNegotiator.swift in Sources */,
+				000000000000000000000054 /* ChannelSession.swift in Sources */,
+				000000000000000000000056 /* IRCSession.swift in Sources */,
+				000000000000000000000058 /* IRCSessionState.swift in Sources */,
+				00000000000000000000005A /* RegistrationFlow.swift in Sources */,
+				00000000000000000000005C /* ServerInfo.swift in Sources */,
+				00000000000000000000005E /* UserSession.swift in Sources */,
+				000000000000000000000060 /* AppStore.swift in Sources */,
+				000000000000000000000062 /* ChannelStore.swift in Sources */,
+				000000000000000000000064 /* NavigationStore.swift in Sources */,
+				000000000000000000000066 /* NotificationStore.swift in Sources */,
+				000000000000000000000068 /* ServerStore.swift in Sources */,
+				00000000000000000000006A /* RootView.swift in Sources */,
+				00000000000000000000006C /* SidebarView.swift in Sources */,
+				00000000000000000000006E /* ChannelView.swift in Sources */,
+				000000000000000000000070 /* InputBarView.swift in Sources */,
+				000000000000000000000072 /* MessageListView.swift in Sources */,
+				000000000000000000000074 /* MessageRowView.swift in Sources */,
+				000000000000000000000076 /* TopicBarView.swift in Sources */,
+				000000000000000000000078 /* UserListView.swift in Sources */,
+				00000000000000000000007A /* MentionHighlightModifier.swift in Sources */,
+				00000000000000000000007C /* NickPillView.swift in Sources */,
+				00000000000000000000007E /* StatusDotView.swift in Sources */,
+				000000000000000000000080 /* TimestampView.swift in Sources */,
+				000000000000000000000082 /* DMListView.swift in Sources */,
+				000000000000000000000084 /* DMView.swift in Sources */,
+				000000000000000000000086 /* AddServerView.swift in Sources */,
+				000000000000000000000088 /* ServerDetailView.swift in Sources */,
+				00000000000000000000008A /* ServerRowView.swift in Sources */,
+				00000000000000000000008C /* NotificationSettingsView.swift in Sources */,
+				00000000000000000000008E /* ServerSettingsView.swift in Sources */,
+				000000000000000000000090 /* SettingsView.swift in Sources */,
+				000000000000000000000092 /* Date+IRC.swift in Sources */,
+				000000000000000000000094 /* HapticEngine.swift in Sources */,
+				000000000000000000000096 /* Keychain.swift in Sources */,
+				000000000000000000000098 /* Logger+IRC.swift in Sources */,
+				00000000000000000000009A /* String+IRC.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		000000000000000000000017 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00000000000000000000009C /* CommandParserTests.swift in Sources */,
+				00000000000000000000009E /* IRCFixtures.swift in Sources */,
+				0000000000000000000000A0 /* CTCPTests.swift in Sources */,
+				0000000000000000000000A2 /* IRCMessageEncoderTests.swift in Sources */,
+				0000000000000000000000A4 /* IRCMessageParserTests.swift in Sources */,
+				0000000000000000000000A6 /* IRCModeTests.swift in Sources */,
+				0000000000000000000000A8 /* SASLTests.swift in Sources */,
+				0000000000000000000000AA /* CapabilityNegotiatorTests.swift in Sources */,
+				0000000000000000000000AC /* ServerInfoTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		000000000000000000000018 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0000000000000000000000AE /* IRCUITests.swift in Sources */,
+				0000000000000000000000B0 /* IRCUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		000000000000000000000019 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00000000000000000000001A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00000000000000000000001B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		00000000000000000000001C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		000000000000000000000004 /* IRC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00000000000000000000000B;
+			buildPhases = (000000000000000000000016 /* Sources */, 000000000000000000000019 /* Frameworks */, 00000000000000000000001C /* Resources */,);
+			buildRules = ();
+			dependencies = ();
+			name = IRC;
+			productName = IRC;
+			productReference = 000000000000000000000007 /* IRC.app */;
+			productType = "com.apple.product-type.application";
+		};
+		000000000000000000000005 /* IRCTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00000000000000000000000C;
+			buildPhases = (000000000000000000000017 /* Sources */, 00000000000000000000001A /* Frameworks */,);
+			buildRules = ();
+			dependencies = ();
+			name = IRCTests;
+			productName = IRCTests;
+			productReference = 000000000000000000000008 /* IRCTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		000000000000000000000006 /* IRCUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00000000000000000000000D;
+			buildPhases = (000000000000000000000018 /* Sources */, 00000000000000000000001B /* Frameworks */,);
+			buildRules = ();
+			dependencies = ();
+			name = IRCUITests;
+			productName = IRCUITests;
+			productReference = 000000000000000000000009 /* IRCUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		000000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					000000000000000000000004 = { CreatedOnToolsVersion = 15.0; };
+					000000000000000000000005 = { CreatedOnToolsVersion = 15.0; TestTargetID = 000000000000000000000004; };
+					000000000000000000000006 = { CreatedOnToolsVersion = 15.0; TestTargetID = 000000000000000000000004; };
+				};
+			};
+			buildConfigurationList = 00000000000000000000000A;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (en, Base);
+			mainGroup = 000000000000000000000002;
+			productRefGroup = 000000000000000000000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (000000000000000000000004 /* IRC */, 000000000000000000000005 /* IRCTests */, 000000000000000000000006 /* IRCUITests */,);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		00000000000000000000000E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("DEBUG=1", "$(inherited)");
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		00000000000000000000000F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		000000000000000000000010 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = IRC/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irc.app";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		000000000000000000000011 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = IRC/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irc.app";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		000000000000000000000012 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irc.app.tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IRC.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/IRC";
+			};
+			name = Debug;
+		};
+		000000000000000000000013 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irc.app.tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IRC.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/IRC";
+			};
+			name = Release;
+		};
+		000000000000000000000014 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irc.app.uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = IRC;
+			};
+			name = Debug;
+		};
+		000000000000000000000015 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irc.app.uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = IRC;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		00000000000000000000000A /* Build configuration list for PBXProject "IRC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (00000000000000000000000E /* Debug */, 00000000000000000000000F /* Release */,);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		00000000000000000000000B /* Build configuration list for PBXNativeTarget "IRC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (000000000000000000000010 /* Debug */, 000000000000000000000011 /* Release */,);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		00000000000000000000000C /* Build configuration list for PBXNativeTarget "IRCTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (000000000000000000000012 /* Debug */, 000000000000000000000013 /* Release */,);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		00000000000000000000000D /* Build configuration list for PBXNativeTarget "IRCUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (000000000000000000000014 /* Debug */, 000000000000000000000015 /* Release */,);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = 000000000000000000000001 /* Project object */;
+}
